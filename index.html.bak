@@ -1,0 +1,1351 @@
+
+ <!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workers - Reliable Home Services Booking Platform</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ================================================================= -->
+    <!-- Navigation Bar -->
+    <!-- ================================================================= -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-fixmate sticky-top">
+        <div class="container">
+            <a class="navbar-brand navbar-brand-logo" href="#home" onclick="App.navigateTo('home')">
+                <i class="bi bi-tools brand-icon"></i> WORKERS<span class="text-primary-emphasis"
+                    style="color: #60a5fa !important;"></span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+               
+<ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+    <li class="nav-item">
+        <a class="nav-link active" href="#home"
+           onclick="event.preventDefault(); App.navigateTo('home'); window.scrollTo({top: 0, behavior: 'smooth'});">
+            Home
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#services"
+           onclick="event.preventDefault(); App.navigateTo('home'); setTimeout(() => document.getElementById('popular-services-section')?.scrollIntoView({behavior: 'smooth', block: 'start'}), 200);">
+            Services
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#contact"
+           onclick="event.preventDefault(); document.getElementById('contact-section')?.scrollIntoView({behavior: 'smooth', block: 'start'});">
+            Contact
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link fw-semibold text-warning"
+           id="navDashboardLink"
+           style="display: none;"
+           href="javascript:void(0)">
+            Dashboard
+        </a>
+    </li>
+</ul>
+
+
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Theme Toggle -->
+                  
+                    <!-- Unauthenticated Buttons -->
+                    <div id="navAuthLinks" class="d-flex gap-2">
+                        <button class="btn btn-outline-light btn-sm px-3" onclick="App.navigateTo('login')">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                        </button>
+                        <button class="btn btn-primary btn-sm px-3" onclick="App.navigateTo('register')">
+                            <i class="bi bi-person-plus me-1"></i> Register
+                        </button>
+                    </div>
+
+                    <!-- Authenticated User Menu -->
+                    <div id="navUserMenu" class="dropdown" style="display: none;">
+                        <button class="btn btn-primary btn-sm dropdown-toggle d-flex align-items-center gap-2"
+                            type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle fs-6"></i>
+                            <span id="navUserName">User</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li>
+                                <h6 class="dropdown-header">Account Management</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="javascript:void(0)"
+                                    onclick="App.navigateTo(Auth.getRole().toLowerCase())"><i
+                                        class="bi bi-speedometer2 me-2"></i>My Dashboard</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="javascript:void(0)"
+                                    onclick="App.handleLogout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Global Loading Spinner -->
+    <div id="globalLoadingSpinner">
+        <div class="spinner-border text-primary" style="width: 3.5rem; height: 3.5rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Main Content Views -->
+    <main>
+
+        <!-- ============================================================= -->
+        <!-- VIEW 1: PUBLIC HOME PAGE -->
+        <!-- ============================================================= -->
+        <section id="view-home" class="view-section">
+            <!-- Hero Banner -->
+            <div class="hero-section">
+                <div class="container position-relative">
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-7">
+                            <span class="badge bg-primary text-white mb-3 px-3 py-2 fs-6 rounded-pill">
+                                <i class="bi bi-shield-check me-1"></i> Verified & Background-Checked Technicians
+                            </span>
+                            <h1 class="hero-title mb-4">Reliable Home Services, Right at Your Doorstep</h1>
+                            <p class="hero-subtitle mb-4">
+                                Book top-rated local plumbers, electricians, cleaners, AC technicians, carpenters, and
+                                appliance repair experts with transparent pricing and guaranteed satisfaction.
+                            </p>
+                            <div class="d-flex flex-wrap gap-3">
+                                <button class="btn btn-primary btn-lg px-4" onclick="App.navigateTo('register')">
+                                    <i class="bi bi-lightning-charge me-1"></i> Book a Service Now
+                                </button>
+                                <button class="btn btn-outline-light btn-lg px-4"
+                                    onclick="document.getElementById('how-it-works-section').scrollIntoView({behavior: 'smooth'})">
+                                    <i class="bi bi-info-circle me-1"></i> Explore How It Works
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="hero-search-card shadow-lg">
+                                <h4 class="fw-bold mb-3"><i class="bi bi-search me-2 text-primary"></i> Find What You
+                                    Need</h4>
+                                <p class="text-white-50 small mb-3">Quickly search available services in your area</p>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-white text-muted border-0"><i
+                                            class="bi bi-geo-alt"></i></span>
+                                    <input type="text" class="form-control border-0"
+                                        placeholder="Your City or Postal Code" value="Brooklyn, NY" readonly>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-white text-muted border-0"><i
+                                            class="bi bi-wrench"></i></span>
+                                    <input type="text" id="heroQuickSearch" class="form-control border-0"
+                                        placeholder="e.g. Plumbing, Electrician, AC">
+                                </div>
+                                <button class="btn btn-primary w-100 py-2 fw-semibold"
+                                    onclick="App.handleServiceBookClick(1)">
+                                    <i class="bi bi-arrow-right-circle me-1"></i> Search Service Providers
+                                </button>
+                                <div
+                                    class="mt-3 pt-3 border-top border-white-50 d-flex justify-content-between text-white-50 small">
+                                    <span><i class="bi bi-check2-circle text-success me-1"></i> Upfront Pricing</span>
+                                    <span><i class="bi bi-check2-circle text-success me-1"></i> Instant Booking</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Popular Services Grid -->
+            <div id="popular-services-section" class="py-5">
+                <div class="container py-4">
+                    <div class="text-center mb-5">
+                        <span class="text-primary fw-bold text-uppercase small letter-spacing-1">Our Core
+                            Offerings</span>
+                        <h2 class="fw-bold display-6 mt-1">Popular Home Services</h2>
+                        <p class="text-muted col-md-8 mx-auto">Explore certified professional services delivered right
+                            to your home with transparent hourly or fixed pricing.</p>
+                    </div>
+
+                    <div id="publicServicesGrid" class="row g-4">
+                        <!-- Populated dynamically via App.loadPublicServices() -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works Section -->
+        
+
+            <!-- Why Choose FixMate Section -->
+       
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Customer Testimonials Section (Clearly Labelled Demo Content) -->
+            <div class="py-5 testimonial-section">
+                <div class="container py-4">
+                    <div class="text-center mb-5">
+                        <span class="badge bg-secondary mb-2">Demo User Testimonials</span>
+                        <h2 class="fw-bold display-6">Loved by Thousands of Homeowners</h2>
+                        <p class="text-muted">Read simulated customer feedback showcasing the platform experience.</p>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm p-4 testimonial-bg">
+                                <div class="d-flex text-warning mb-3">
+                                    <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i
+                                        class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i
+                                        class="bi bi-star-fill"></i>
+                                </div>
+                                <p class="text-muted small mb-4">"Workers solved my leaking kitchen sink in less than 2
+                                    hours. David was punctual, polite, and completely cleaned up the area afterward.
+                                    Super easy to book!"</p>
+                                <div class="d-flex align-items-center">
+
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg"
+     alt="Customer" class="testimonial-photo me-3">
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Emily Martinez</h6>
+                                        <span class="small text-muted">Customer (Springfield) - Demo Review</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm p-4">
+                                <div class="d-flex text-warning mb-3">
+                                    <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i
+                                        class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i
+                                        class="bi bi-star-fill"></i>
+                                </div>
+                                <p class="text-muted small mb-4">"As an electrician on FixMate, I receive consistent
+                                    weekly client bookings without spending money on marketing. The dashboard makes
+                                    managing jobs effortless."</p>
+                                <div class="d-flex align-items-center">
+<img src="https://randomuser.me/api/portraits/women/68.jpg"
+     alt="Provider" class="testimonial-photo me-3">                                    <div>
+                                        <h6 class="mb-0 fw-bold">Elena Rostova</h6>
+                                        <span class="small text-muted">Electrician Provider (Queens, NY) - Demo
+                                            Review</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm p-4">
+                                <div class="d-flex text-warning mb-3">
+                                    <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i
+                                        class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i
+                                        class="bi bi-star-fill"></i>
+                                </div>
+                                <p class="text-muted small mb-4">"Transparent prices with no haggling. The AC repair
+                                    technician refilled the refrigerant and tuned the air filter in 45 minutes. Highly
+                                    recommended!"</p>
+                                <div class="d-flex align-items-center">
+<img src="https://randomuser.me/api/portraits/men/32.jpg"
+     alt="Customer" class="testimonial-photo me-3">                                    <div>
+                                        <h6 class="mb-0 fw-bold">Robert Chen</h6>
+                                        <span class="small text-muted">Customer (Brooklyn, NY) - Demo Review</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Provider CTA Banner -->
+            <div class="py-5 text-center text-white"
+                style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);">
+                <div class="container py-3">
+                    <h3 class="fw-bold mb-3">Are You an Experienced Service Professional?</h3>
+                 
+                    <button class="btn btn-primary btn-lg px-4"
+                        onclick="App.navigateTo('register'); document.getElementById('regRoleProvider').checked = true;">
+                        <i class="bi bi-briefcase me-1"></i> Join as a Service Provider
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ============================================================= -->
+        <!-- VIEW 2: AUTHENTICATION - LOGIN PAGE -->
+        <!-- ============================================================= -->
+        <section id="view-login" class="view-section py-5" style="display: none;">
+            <div class="container py-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-7 col-lg-5">
+                        <div class="card shadow-sm border-0 p-4">
+                            <div class="text-center mb-4">
+                                <div class="service-icon-box mx-auto mb-2 bg-primary-subtle">
+                                    <i class="bi bi-box-arrow-in-right fs-3 text-primary"></i>
+                                </div>
+                                <h3 class="fw-bold">Sign In to FixMate</h3>
+                                <p class="text-muted small">Access your personalized customer, provider, or admin
+                                    dashboard</p>
+                            </div>
+
+                            <!-- Quick Demo Logins -->
+                            <div class="mb-4 p-3 bg-light rounded text-center">
+                                <span class="small fw-bold text-muted d-block mb-2">⚡ Quick 1-Click Demo Fill:</span>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                        onclick="App.fillDemoLogin('CUSTOMER')">Customer</button>
+                                    <button type="button" class="btn btn-outline-info btn-sm"
+                                        onclick="App.fillDemoLogin('PROVIDER')">Provider</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        onclick="App.fillDemoLogin('ADMIN')">Admin</button>
+                                </div>
+                            </div>
+
+                            <form id="loginForm" onsubmit="App.handleLogin(event)">
+                                <div class="mb-3">
+                                    <label for="loginEmail" class="form-label small fw-semibold">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" id="loginEmail" class="form-control"
+                                            placeholder="name@example.com" required>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="loginPassword" class="form-label small fw-semibold">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                        <input type="password" id="loginPassword" class="form-control"
+                                            placeholder="••••••••" required>
+                                    </div>
+                                </div>
+                                <button type="submit" id="btnLoginSubmit"
+                                    class="btn btn-primary w-100 py-2 fw-semibold">
+                                    Sign In
+                                </button>
+                            </form>
+
+                            <div class="mt-4 text-center small text-muted">
+                                Don't have an account yet?
+                                <a href="#register" onclick="App.navigateTo('register')" class="fw-semibold">Create an
+                                    Account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ============================================================= -->
+        <!-- VIEW 3: AUTHENTICATION - REGISTER PAGE -->
+        <!-- ============================================================= -->
+        <section id="view-register" class="view-section py-5" style="display: none;">
+            <div class="container py-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
+                        <div class="card shadow-sm border-0 p-4">
+                            <div class="text-center mb-4">
+                                <div class="service-icon-box mx-auto mb-2 bg-primary-subtle">
+                                    <i class="bi bi-person-plus fs-3 text-primary"></i>
+                                </div>
+                                <h3 class="fw-bold">Create Your FixMate Account</h3>
+                                <p class="text-muted small">Choose your role and register securely</p>
+                            </div>
+
+                            <form id="registerForm" onsubmit="App.handleRegister(event)">
+                                <!-- Role Selector -->
+                                <div class="mb-4 p-3 bg-light rounded">
+                                    <label class="form-label fw-bold small text-muted d-block mb-2">I want to register
+                                        as:</label>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <input type="radio" class="btn-check" name="regRole" id="regRoleCustomer"
+                                                value="CUSTOMER" checked>
+                                            <label class="btn btn-outline-primary w-100 py-2" for="regRoleCustomer">
+                                                <i class="bi bi-person me-1"></i> Customer
+                                            </label>
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="radio" class="btn-check" name="regRole" id="regRoleProvider"
+                                                value="PROVIDER">
+                                            <label class="btn btn-outline-info w-100 py-2" for="regRoleProvider">
+                                                <i class="bi bi-tools me-1"></i> Service Provider
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="regFullName" class="form-label small fw-semibold">Full Name</label>
+                                    <input type="text" id="regFullName" class="form-control" placeholder="John Doe"
+                                        required minlength="2">
+                                </div>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label for="regEmail" class="form-label small fw-semibold">Email Address</label>
+                                        <input type="email" id="regEmail" class="form-control"
+                                            placeholder="name@example.com" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="regPhone" class="form-label small fw-semibold">Phone Number</label>
+                                        <input type="tel" id="regPhone" class="form-control" placeholder="+1-555-0199"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="regAddress" class="form-label small fw-semibold">Service / Home
+                                        Address</label>
+                                    <input type="text" id="regAddress" class="form-control"
+                                        placeholder="Street Address, City, Postal Code" required minlength="3">
+                                </div>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="regPassword" class="form-label small fw-semibold">Password</label>
+                                        <input type="password" id="regPassword" class="form-control"
+                                            placeholder="Min 6 characters" required minlength="6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="regConfirmPassword" class="form-label small fw-semibold">Confirm
+                                            Password</label>
+                                        <input type="password" id="regConfirmPassword" class="form-control"
+                                            placeholder="Re-enter password" required minlength="6">
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="btnRegisterSubmit"
+                                    class="btn btn-primary w-100 py-2 fw-semibold">
+                                    Complete Registration
+                                </button>
+                            </form>
+
+                            <div class="mt-4 text-center small text-muted">
+                                Already have an account?
+                                <a href="#login" onclick="App.navigateTo('login')" class="fw-semibold">Sign In Here</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ============================================================= -->
+        <!-- VIEW 4: CUSTOMER DASHBOARD -->
+        <!-- ============================================================= -->
+        <section id="view-customer" class="view-section py-4" style="display: none;">
+            <div class="container">
+                <!-- Welcome Banner & KPIs -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h2 class="fw-bold mb-1">Customer Dashboard</h2>
+                        <p class="text-muted mb-0">Welcome back, <span id="customerWelcomeName"
+                                class="fw-semibold text-primary">Customer</span>!</p>
+                    </div>
+                    <div class="mt-2 mt-sm-0">
+                        <button class="btn btn-outline-primary btn-sm" onclick="Customer.init()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Refresh Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Counters -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-primary text-white"><i class="bi bi-calendar2-range"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="custStatTotal">0</h3>
+                                <span class="small text-muted">Total Bookings</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-warning text-dark"><i class="bi bi-hourglass-split"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="custStatPending">0</h3>
+                                <span class="small text-muted">Pending Confirmation</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-info text-white"><i class="bi bi-check-circle"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="custStatActive">0</h3>
+                                <span class="small text-muted">Accepted / In-Progress</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-success text-white"><i class="bi bi-patch-check"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="custStatCompleted">0</h3>
+                                <span class="small text-muted">Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Tabs Navigation -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-2">
+                        <ul class="nav nav-pills nav-fill" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link cust-nav-btn active fw-semibold" id="btn-cust-tab-explore"
+                                    onclick="App.showCustomerTab('explore')">
+                                    <i class="bi bi-search me-2"></i> Browse Services & Providers
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link cust-nav-btn fw-semibold" id="btn-cust-tab-bookings"
+                                    onclick="App.showCustomerTab('bookings')">
+                                    <i class="bi bi-calendar2-check me-2"></i> My Bookings History
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link cust-nav-btn fw-semibold" id="btn-cust-tab-profile"
+                                    onclick="App.showCustomerTab('profile')">
+                                    <i class="bi bi-person-gear me-2"></i> Profile & Settings
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab 1: Browse Providers -->
+                <div id="cust-tab-explore" class="cust-tab-content">
+                    <!-- Search & Filter Bar -->
+                    <div class="card border-0 shadow-sm mb-4 p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0"><i
+                                            class="bi bi-search text-muted"></i></span>
+                                    <input type="text" id="custSearchInput" class="form-control border-start-0"
+                                        placeholder="Search by service name, provider, keyword..."
+                                        oninput="Customer.filterProviders()">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <select id="custServiceFilter" class="form-select"
+                                    onchange="Customer.filterProviders()">
+                                    <option value="">All Service Categories</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-outline-secondary w-100"
+                                    onclick="document.getElementById('custSearchInput').value = ''; document.getElementById('custServiceFilter').value = ''; Customer.filterProviders()">
+                                    <i class="bi bi-x-circle me-1"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Providers Grid -->
+                    <div id="custProvidersGrid" class="row">
+                        <!-- Populated dynamically via Customer.renderProviders() -->
+                    </div>
+                </div>
+
+                <!-- Tab 2: My Bookings -->
+                <div id="cust-tab-bookings" class="cust-tab-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">My Bookings</h5>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-outline-secondary active"
+                                onclick="Customer.renderBookings('')">All</button>
+                            <button type="button" class="btn btn-outline-warning"
+                                onclick="Customer.renderBookings('PENDING')">Pending</button>
+                            <button type="button" class="btn btn-outline-primary"
+                                onclick="Customer.renderBookings('ACCEPTED')">Accepted</button>
+                            <button type="button" class="btn btn-outline-success"
+                                onclick="Customer.renderBookings('COMPLETED')">Completed</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                onclick="Customer.renderBookings('CANCELLED')">Cancelled</button>
+                        </div>
+                    </div>
+                    <div id="custBookingsList">
+                        <!-- Populated dynamically via Customer.renderBookings() -->
+                    </div>
+                </div>
+
+                <!-- Tab 3: Customer Profile & Settings -->
+                <div id="cust-tab-profile" class="cust-tab-content" style="display: none;">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 p-4">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-person me-2 text-primary"></i> Contact &
+                                    Address Info</h5>
+                                <form id="custProfileForm" onsubmit="Customer.updateProfile(event)">
+                                    <div class="mb-3">
+                                        <label for="custProfileEmail" class="form-label small fw-semibold">Email Address
+                                            (Read-only)</label>
+                                        <input type="email" id="custProfileEmail" class="form-control" disabled>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="custProfileName" class="form-label small fw-semibold">Full
+                                            Name</label>
+                                        <input type="text" id="custProfileName" class="form-control" required
+                                            minlength="2">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="custProfilePhone" class="form-label small fw-semibold">Phone
+                                            Number</label>
+                                        <input type="tel" id="custProfilePhone" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="custProfileAddress" class="form-label small fw-semibold">Default
+                                            Service Address</label>
+                                        <textarea id="custProfileAddress" class="form-control" rows="3"
+                                            required></textarea>
+                                    </div>
+                                    <button type="submit" id="btnCustSaveProfile" class="btn btn-primary fw-semibold">
+                                        Save Changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 p-4">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-shield-lock me-2 text-primary"></i> Change
+                                    Password</h5>
+                                <form id="custChangePassForm" onsubmit="Customer.changePassword(event)">
+                                    <div class="mb-3">
+                                        <label for="custOldPassword" class="form-label small fw-semibold">Current
+                                            Password</label>
+                                        <input type="password" id="custOldPassword" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="custNewPassword" class="form-label small fw-semibold">New
+                                            Password</label>
+                                        <input type="password" id="custNewPassword" class="form-control" required
+                                            minlength="6">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="custConfirmPassword" class="form-label small fw-semibold">Confirm
+                                            New Password</label>
+                                        <input type="password" id="custConfirmPassword" class="form-control" required
+                                            minlength="6">
+                                    </div>
+                                    <button type="submit" id="btnCustChangePass"
+                                        class="btn btn-outline-primary fw-semibold">
+                                        Update Password
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ============================================================= -->
+        <!-- VIEW 5: PROVIDER DASHBOARD -->
+        <!-- ============================================================= -->
+        <section id="view-provider" class="view-section py-4" style="display: none;">
+            <div class="container">
+                <!-- Welcome Banner & KPIs -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h2 class="fw-bold mb-1">Service Provider Dashboard</h2>
+                        <p class="text-muted mb-0">Welcome, <span id="providerWelcomeName"
+                                class="fw-semibold text-primary">Provider</span> | Manage requests, active jobs, and
+                            rates.</p>
+                    </div>
+                    <div class="mt-2 mt-sm-0">
+                        <button class="btn btn-outline-primary btn-sm" onclick="Provider.init()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Refresh Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Counters -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-warning text-dark"><i class="bi bi-bell"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="provStatPending">0</h3>
+                                <span class="small text-muted">Pending Requests</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-primary text-white"><i class="bi bi-tools"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="provStatActive">0</h3>
+                                <span class="small text-muted">Active Scheduled Jobs</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-success text-white"><i class="bi bi-patch-check"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="provStatCompleted">0</h3>
+                                <span class="small text-muted">Jobs Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-info text-white"><i class="bi bi-currency-dollar"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="provStatEarnings">$0.00</h3>
+                                <span class="small text-muted">Total Gross Earnings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Tabs Navigation -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-2">
+                        <ul class="nav nav-pills nav-fill" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link prov-nav-btn active fw-semibold" id="btn-prov-tab-requests"
+                                    onclick="App.showProviderTab('requests')">
+                                    <i class="bi bi-inbox me-2"></i> Incoming Requests
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link prov-nav-btn fw-semibold" id="btn-prov-tab-active"
+                                    onclick="App.showProviderTab('active')">
+                                    <i class="bi bi-play-circle me-2"></i> Active Jobs
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link prov-nav-btn fw-semibold" id="btn-prov-tab-services"
+                                    onclick="App.showProviderTab('services')">
+                                    <i class="bi bi-card-checklist me-2"></i> My Service Offers
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link prov-nav-btn fw-semibold" id="btn-prov-tab-history"
+                                    onclick="App.showProviderTab('history')">
+                                    <i class="bi bi-clock-history me-2"></i> History
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link prov-nav-btn fw-semibold" id="btn-prov-tab-profile"
+                                    onclick="App.showProviderTab('profile')">
+                                    <i class="bi bi-person-gear me-2"></i> Profile
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab 1: Incoming Requests -->
+                <div id="prov-tab-requests" class="prov-tab-content">
+                    <h5 class="fw-bold mb-3">Incoming Booking Requests</h5>
+                    <div id="provRequestsList">
+                        <!-- Populated dynamically via Provider.renderRequests() -->
+                    </div>
+                </div>
+
+                <!-- Tab 2: Active Jobs -->
+                <div id="prov-tab-active" class="prov-tab-content" style="display: none;">
+                    <h5 class="fw-bold mb-3">Active & Scheduled Jobs</h5>
+                    <div id="provActiveJobsList">
+                        <!-- Populated dynamically via Provider.renderActiveJobs() -->
+                    </div>
+                </div>
+
+                <!-- Tab 3: My Service Offerings -->
+                <div id="prov-tab-services" class="prov-tab-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">My Service Catalog</h5>
+                        <button class="btn btn-primary btn-sm" onclick="Provider.openAddServiceModal()">
+                            <i class="bi bi-plus-circle me-1"></i> Add Service Offering
+                        </button>
+                    </div>
+                    <div id="provServicesList">
+                        <!-- Populated dynamically via Provider.renderMyServices() -->
+                    </div>
+                </div>
+
+                <!-- Tab 4: History -->
+                <div id="prov-tab-history" class="prov-tab-content" style="display: none;">
+                    <h5 class="fw-bold mb-3">Past Job History</h5>
+                    <div id="provHistoryList">
+                        <!-- Populated dynamically via Provider.renderHistory() -->
+                    </div>
+                </div>
+
+                <!-- Tab 5: Profile -->
+                <div id="prov-tab-profile" class="prov-tab-content" style="display: none;">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 p-4">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-briefcase me-2 text-primary"></i> Business &
+                                    Contact Info</h5>
+                                <form id="provProfileForm" onsubmit="Provider.updateProfile(event)">
+                                    <div class="mb-3">
+                                        <label for="provProfileEmail" class="form-label small fw-semibold">Email Address
+                                            (Read-only)</label>
+                                        <input type="email" id="provProfileEmail" class="form-control" disabled>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="provProfileName" class="form-label small fw-semibold">Business /
+                                            Full Name</label>
+                                        <input type="text" id="provProfileName" class="form-control" required
+                                            minlength="2">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="provProfilePhone" class="form-label small fw-semibold">Business
+                                            Phone Number</label>
+                                        <input type="tel" id="provProfilePhone" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="provProfileAddress" class="form-label small fw-semibold">Workshop /
+                                            Service Base Address</label>
+                                        <textarea id="provProfileAddress" class="form-control" rows="3"
+                                            required></textarea>
+                                    </div>
+                                    <button type="submit" id="btnProvSaveProfile" class="btn btn-primary fw-semibold">
+                                        Save Changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm border-0 p-4">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-shield-lock me-2 text-primary"></i> Security &
+                                    Password</h5>
+                                <form id="provChangePassForm" onsubmit="Provider.changePassword(event)">
+                                    <div class="mb-3">
+                                        <label for="provOldPassword" class="form-label small fw-semibold">Current
+                                            Password</label>
+                                        <input type="password" id="provOldPassword" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="provNewPassword" class="form-label small fw-semibold">New
+                                            Password</label>
+                                        <input type="password" id="provNewPassword" class="form-control" required
+                                            minlength="6">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="provConfirmPassword" class="form-label small fw-semibold">Confirm
+                                            New Password</label>
+                                        <input type="password" id="provConfirmPassword" class="form-control" required
+                                            minlength="6">
+                                    </div>
+                                    <button type="submit" id="btnProvChangePass"
+                                        class="btn btn-outline-primary fw-semibold">
+                                        Update Password
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ============================================================= -->
+        <!-- VIEW 6: ADMIN DASHBOARD -->
+        <!-- ============================================================= -->
+        <section id="view-admin" class="view-section py-4" style="display: none;">
+            <div class="container">
+                <!-- Welcome Banner & KPIs -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h2 class="fw-bold mb-1">FixMate Platform Administration</h2>
+                        <p class="text-muted mb-0">Full control over users, service offerings, bookings, and revenue
+                            analytics.</p>
+                    </div>
+                    <div class="mt-2 mt-sm-0">
+                        <button class="btn btn-outline-primary btn-sm" onclick="Admin.init()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Refresh Metrics
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin KPI Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-primary text-white"><i class="bi bi-people"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="adminStatUsers">0</h3>
+                                <span class="small text-muted">Total Registered Users</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-info text-white"><i class="bi bi-person-badge"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="adminStatProviders">0</h3>
+                                <span class="small text-muted">Service Providers</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-warning text-dark"><i class="bi bi-calendar-event"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="adminStatBookings">0</h3>
+                                <span class="small text-muted">Total Bookings</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="kpi-card">
+                            <div class="kpi-icon bg-success text-white"><i class="bi bi-cash-stack"></i></div>
+                            <div>
+                                <h3 class="fw-bold mb-0" id="adminStatRevenue">$0.00</h3>
+                                <span class="small text-muted">Completed Gross Revenue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Tabs Navigation -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-2">
+                        <ul class="nav nav-pills nav-fill" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link admin-nav-btn active fw-semibold" id="btn-admin-tab-users"
+                                    onclick="App.showAdminTab('users')">
+                                    <i class="bi bi-people me-2"></i> Users Management
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link admin-nav-btn fw-semibold" id="btn-admin-tab-services"
+                                    onclick="App.showAdminTab('services')">
+                                    <i class="bi bi-grid me-2"></i> Services Catalog
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link admin-nav-btn fw-semibold" id="btn-admin-tab-bookings"
+                                    onclick="App.showAdminTab('bookings')">
+                                    <i class="bi bi-journal-text me-2"></i> All Bookings
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab 1: Users Management -->
+                <div id="admin-tab-users" class="admin-tab-content">
+                    <div class="card border-0 shadow-sm mb-3 p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0"><i
+                                            class="bi bi-search text-muted"></i></span>
+                                    <input type="text" id="adminUserSearchInput" class="form-control border-start-0"
+                                        placeholder="Search by name, email, or phone..." oninput="Admin.filterUsers()">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select id="adminUserRoleFilter" class="form-select" onchange="Admin.filterUsers()">
+                                    <option value="">All Roles</option>
+                                    <option value="CUSTOMER">Customers Only</option>
+                                    <option value="PROVIDER">Providers Only</option>
+                                    <option value="ADMIN">Admins Only</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-outline-secondary w-100"
+                                    onclick="document.getElementById('adminUserSearchInput').value=''; document.getElementById('adminUserRoleFilter').value=''; Admin.filterUsers()">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive bg-white rounded shadow-sm">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User & Address</th>
+                                    <th>Email / Phone</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTableBody">
+                                <!-- Populated dynamically via Admin.renderUsers() -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Services Catalog -->
+                <div id="admin-tab-services" class="admin-tab-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">Platform Service Categories</h5>
+                        <button class="btn btn-primary btn-sm" onclick="Admin.openAddServiceModal()">
+                            <i class="bi bi-plus-circle me-1"></i> Add Service Category
+                        </button>
+                    </div>
+
+                    <div class="table-responsive bg-white rounded shadow-sm">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Service Name</th>
+                                    <th>Description</th>
+                                    <th>Icon Class</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminServicesTableBody">
+                                <!-- Populated dynamically via Admin.renderServices() -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Platform Bookings -->
+                <div id="admin-tab-bookings" class="admin-tab-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">All Customer Bookings</h5>
+                        <div class="col-md-3">
+                            <select id="adminBookingStatusFilter" class="form-select form-select-sm"
+                                onchange="Admin.filterBookings()">
+                                <option value="">All Statuses</option>
+                                <option value="PENDING">PENDING</option>
+                                <option value="ACCEPTED">ACCEPTED</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="CANCELLED">CANCELLED</option>
+                                <option value="REJECTED">REJECTED</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive bg-white rounded shadow-sm">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Provider</th>
+                                    <th>Service</th>
+                                    <th>Scheduled Date & Time</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminBookingsTableBody">
+                                <!-- Populated dynamically via Admin.renderBookings() -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ================================================================= -->
+    <!-- MODAL 1: CUSTOMER CREATE BOOKING -->
+    <!-- ================================================================= -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="bookingModalLabel">
+                        <i class="bi bi-calendar-plus me-1"></i> Book Service
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form id="createBookingForm" onsubmit="Customer.submitBooking(event)">
+                    <div class="modal-body p-4">
+                        <!-- Service & Provider Summary Card -->
+                        <div class="p-3 bg-light rounded mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <h6 class="fw-bold mb-0" id="bookServiceName">Service Name</h6>
+                                <span class="fs-5 fw-bold text-primary" id="bookPricePreview">$0.00</span>
+                            </div>
+                            <div class="small text-muted" id="bookProviderName">Provider Name</div>
+                            <div class="small text-secondary mt-1" id="bookAvailabilityNote">Availability</div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="bookDate" class="form-label small fw-semibold">Preferred Date</label>
+                                <input type="date" id="bookDate" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="bookTime" class="form-label small fw-semibold">Preferred Time</label>
+                                <input type="time" id="bookTime" class="form-control" value="10:00" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="bookAddress" class="form-label small fw-semibold">Service Address</label>
+                            <input type="text" id="bookAddress" class="form-control"
+                                placeholder="House/Apt, Street Address" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="bookDescription" class="form-label small fw-semibold">Problem Description /
+                                Notes (Optional)</label>
+                            <textarea id="bookDescription" class="form-control" rows="3"
+                                placeholder="Describe the issue or any specific requirements for the technician..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="btnConfirmBooking" class="btn btn-primary px-4 fw-semibold">
+                            Confirm Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODAL 2: PROVIDER SERVICE OFFERING (ADD / EDIT) -->
+    <!-- ================================================================= -->
+    <div class="modal fade" id="providerServiceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="provServiceModalTitle">Add Service Offering</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="providerServiceForm" onsubmit="Provider.saveServiceOffering(event)">
+                    <div class="modal-body p-4">
+                        <div class="mb-3" id="provServiceSelectGroup">
+                            <label for="provModalServiceSelect" class="form-label small fw-semibold">Select Service
+                                Category</label>
+                            <select id="provModalServiceSelect" class="form-select">
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="provModalPrice" class="form-label small fw-semibold">Service Price
+                                    ($)</label>
+                                <input type="number" id="provModalPrice" class="form-control" step="0.5" min="1"
+                                    placeholder="e.g. 75.00" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="provModalExp" class="form-label small fw-semibold">Experience
+                                    (Years)</label>
+                                <input type="number" id="provModalExp" class="form-control" min="0" max="60" value="2"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="provModalAvail" class="form-label small fw-semibold">Weekly Availability /
+                                Working Hours</label>
+                            <input type="text" id="provModalAvail" class="form-control"
+                                placeholder="e.g. Mon-Sat 9AM-6PM, or 24/7" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="btnProvSaveService" class="btn btn-primary px-4 fw-semibold">Save
+                            Offering</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- MODAL 3: ADMIN SERVICE CATALOG (ADD / EDIT) -->
+    <!-- ================================================================= -->
+    <div class="modal fade" id="adminServiceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="adminServiceModalTitle">Add Service Category</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="adminServiceForm" onsubmit="Admin.saveService(event)">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label for="adminServiceName" class="form-label small fw-semibold">Service Name</label>
+                            <input type="text" id="adminServiceName" class="form-control"
+                                placeholder="e.g. Solar Panel Cleaning" required minlength="2">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="adminServiceDesc" class="form-label small fw-semibold">Description</label>
+                            <textarea id="adminServiceDesc" class="form-control" rows="3"
+                                placeholder="Detailed service description..." required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="adminServiceIcon" class="form-label small fw-semibold">Bootstrap Icon
+                                Class</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                <input type="text" id="adminServiceIcon" class="form-control"
+                                    placeholder="e.g. bi-sun, bi-wrench-adjustable" value="bi-tools">
+                            </div>
+                            <div class="form-text small">Use any Bootstrap 5 icon class name (e.g.
+                                <code>bi-stars</code>, <code>bi-snow</code>).
+                            </div>
+                        </div>
+
+                        <div class="form-check form-switch mt-3" id="adminServiceActiveGroup" style="display: none;">
+                            <input class="form-check-input" type="checkbox" id="adminServiceActive" checked>
+                            <label class="form-check-label small fw-semibold" for="adminServiceActive">Active (Visible
+                                in catalog)</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="btnAdminSaveService" class="btn btn-primary px-4 fw-semibold">Save
+                            Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================================================================= -->
+    <!-- Footer -->
+    <!-- ================================================================= -->
+    <footer id="contact-section" class="footer-fixmate mt-auto">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4">
+                    <h5 class="text-white fw-bold mb-3">
+                        <i class="bi bi-tools text-primary me-1"></i> FixMate
+                    </h5>
+                    <p class="small text-white-50">
+                        FixMate is a full-stack home services booking platform connecting verified, skilled technicians
+                        with homeowners for seamless home maintenance.
+                    </p>
+                    <div class="d-flex gap-3 fs-5 text-white-50">
+                        <a href="javascript:void(0)" class="text-white-50"><i class="bi bi-facebook"></i></a>
+                        <a href="javascript:void(0)" class="text-white-50"><i class="bi bi-twitter-x"></i></a>
+                        <a href="javascript:void(0)" class="text-white-50"><i class="bi bi-instagram"></i></a>
+                        <a href="javascript:void(0)" class="text-white-50"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-2">
+                    <h6>Quick Links</h6>
+                  
+<ul class="list-unstyled small">
+    <li class="mb-2">
+        <a href="#home"
+           onclick="event.preventDefault(); App.navigateTo('home'); window.scrollTo({top: 0, behavior: 'smooth'});">
+            Home
+        </a>
+    </li>
+
+    <li class="mb-2">
+        <a href="#services"
+           onclick="event.preventDefault(); App.navigateTo('home'); setTimeout(() => document.getElementById('popular-services-section')?.scrollIntoView({behavior: 'smooth', block: 'start'}), 200);">
+            All Services
+        </a>
+    </li>
+
+    <li class="mb-2">
+        <a href="#contact"
+           onclick="event.preventDefault(); document.getElementById('contact-section')?.scrollIntoView({behavior: 'smooth', block: 'start'});">
+            Contact Us
+        </a>
+    </li>
+</ul>
+
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <h6>Service Roles</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#login" onclick="App.navigateTo('login')">Customer Sign In</a></li>
+                        <li class="mb-2"><a href="#register"
+                                onclick="App.navigateTo('register'); document.getElementById('regRoleCustomer').checked = true;">Customer
+                                Sign Up</a></li>
+                        <li class="mb-2"><a href="#register"
+                                onclick="App.navigateTo('register'); document.getElementById('regRoleProvider').checked = true;">Join
+                                as Provider</a></li>
+                        <li class="mb-2"><a href="#login"
+                                onclick="App.navigateTo('login'); App.fillDemoLogin('ADMIN')">Admin Portal</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6>Contact </h6>
+                    <ul class="list-unstyled small text-white-50">
+                         <li class="mb-2"><i class="bi bi-envelope me-2 text-primary"></i> Anshit Vishwakarma
+                        </li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2 text-primary"></i> Bhopal Madhya Pradesh
+                        </li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2 text-primary"></i> anshitvishwakarma39@gmail.com</li>
+                        <li class="mb-2"><i class="bi bi-clock me-2 text-primary"></i> 24/7 Customer Emergency Helpline
+                        </li>
+                    </ul>
+                </div>
+            </div>
+         
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FixMate Application Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/customer.js"></script>
+    <script src="js/provider.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
